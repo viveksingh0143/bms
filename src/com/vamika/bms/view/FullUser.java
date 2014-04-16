@@ -1,6 +1,8 @@
 package com.vamika.bms.view;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -54,6 +56,10 @@ public class FullUser implements Serializable {
 
 	@NotNull(groups = { Update.class, Create.class })
 	private UsersStatus status;
+	
+	private List<Integer> roles_id;
+	
+	private List<FullRole> roles;
 
 	public Integer getId() {
 		return id;
@@ -118,4 +124,22 @@ public class FullUser implements Serializable {
 	public void setStatus(UsersStatus status) {
 		this.status = status;
 	}
+
+	public List<FullRole> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<FullRole> roles) {
+		this.roles = roles;
+	}
+
+	public List<Integer> getRoles_id() {
+		return roles_id;
+	}
+
+	public void setRoles_id(List<Integer> roles_id) {
+		this.roles_id = roles_id;
+	}
+	
+	
 }

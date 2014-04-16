@@ -1,13 +1,16 @@
 package com.vamika.bms.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vamika.bms.model.Role;
 import com.vamika.bms.model.User;
 import com.vamika.bms.view.FullUser;
 import com.vamika.bms.view.ShortUser;
@@ -79,6 +82,13 @@ public abstract class UserDaoBase implements UserDao {
 		target.setEmail(user.getEmail());
 		target.setAdmin(user.getAdmin());
 		target.setPassword(user.getPassword());
+		if(user.getRoles().size() > 0) {
+			List<Integer>rolesId = new ArrayList<Integer>();
+			for(Role role: user.getRoles()) {
+				rolesId.add(role.getId());
+			}
+			target.setRoles_id(rolesId);
+		}
 	}
 
 	public FullUser toFullVO(final User entity) {

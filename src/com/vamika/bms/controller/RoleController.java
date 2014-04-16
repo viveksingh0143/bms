@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.vamika.bms.model.enums.EnableDisableStatus;
 import com.vamika.bms.model.enums.EnumInterface;
-import com.vamika.bms.service.RoleService;
+import com.vamika.bms.service.UserService;
 import com.vamika.bms.validator.Create;
 import com.vamika.bms.validator.Update;
 import com.vamika.bms.view.FullRole;
@@ -24,7 +24,7 @@ import com.vamika.bms.view.FullRole;
 public class RoleController {
 
 	@Autowired
-	private RoleService roleService;
+	private UserService userService;
 	
 	@InitBinder("roleCreateForm")
 	public void initRoleCreateFormBinder(WebDataBinder binder) {
@@ -38,13 +38,13 @@ public class RoleController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String listRoles(ModelMap map) {
-		map.addAttribute("roles", roleService.getAllRoles());
+		map.addAttribute("roles", userService.getAllRoles());
 		return "roles/list";
 	}
 
 	@RequestMapping(value = "/{roleName}", method = RequestMethod.GET)
 	public String showRole(@PathVariable String roleName, ModelMap map) {
-		FullRole role = roleService.loadRole(roleName);
+		FullRole role = userService.loadRole(roleName);
 		map.addAttribute("role", role);
 		return "roles/show";
 	}
@@ -57,7 +57,7 @@ public class RoleController {
 
 	@RequestMapping(value = "/edit/{roleName}", method = RequestMethod.GET)
 	public String editRole(@PathVariable String roleName, ModelMap map) {
-		FullRole role = roleService.loadRole(roleName);
+		FullRole role = userService.loadRole(roleName);
 		map.addAttribute("roleUpdateForm", role);
 		return "roles/edit";
 	}
@@ -67,7 +67,7 @@ public class RoleController {
 		if (bindingResult.hasErrors()) {
 			return "roles/new";
         }
-        roleService.saveRole(role);
+		userService.saveRole(role);
         return "redirect:/roles";
     }
 	
@@ -76,19 +76,19 @@ public class RoleController {
 		if (bindingResult.hasErrors()) {
         	return "roles/edit";
         }
-        roleService.updateRole(role);
+		userService.updateRole(role);
         role = null;
         return "redirect:/roles";
     }
 
 	@RequestMapping(value = "/delete/{roleName}", method = { RequestMethod.GET, RequestMethod.DELETE })
 	public String destroyRole(@PathVariable String roleName) {
-		roleService.deleteRole(roleName);
+		userService.deleteRole(roleName);
 		return "redirect:/roles";
 	}
 
-	public void setRoleService(RoleService roleService) {
-		this.roleService = roleService;
+	public void setRoleService(UserService userService) {
+		this.userService = userService;
 	}
 	
 	@ModelAttribute("rolesstatus")

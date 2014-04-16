@@ -18,6 +18,7 @@
 <spring:message code="user.status.placeholder" var="statusPlaceholder" />
 <spring:message code="user.admin.label" var="adminLabel" />
 <spring:message code="user.admin.placeholder" var="adminPlaceholder" />
+<spring:message code="user.roles.label" var="rolesLabel" />
 
 <h1 class="page-header"><spring:message code="user.manage" /></h1>
 
@@ -31,6 +32,7 @@
 	<t:password path="confirmPassword" required="true" label="${confirmPasswordLabel}" placeholder="${confirmPasswordPlaceholder}" labelcol="3" />
 	<t:select path="status" required="true" items="${usersstatus}" label="${statusLabel}" placeholder="${statusPlaceholder}" labelcol="3" />
 	<t:select path="admin" required="true" items="${userstype}" label="${adminLabel}" placeholder="${adminPlaceholder}" labelcol="3" />
+	<t:checkboxes path="roles_id" required="false" items="${roles}" itemLabel="name" itemValue="id" label="${rolesLabel}" placeholder="${rolesPlaceholder}" labelcol="3" />
 
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-4">

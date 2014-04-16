@@ -1,10 +1,11 @@
 package com.vamika.bms.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -19,6 +20,7 @@ import com.vamika.bms.model.enums.UsersType;
 import com.vamika.bms.service.UserService;
 import com.vamika.bms.validator.Create;
 import com.vamika.bms.validator.Update;
+import com.vamika.bms.view.FullRole;
 import com.vamika.bms.view.FullUser;
 
 @Controller
@@ -30,12 +32,12 @@ public class UserController {
 	
 	@InitBinder("userCreateForm")
 	public void initUserCreateFormBinder(WebDataBinder binder) {
-		binder.setAllowedFields(new String[] { "username", "password", "confirmPassword", "name", "email", "admin", "status" });
+		binder.setAllowedFields(new String[] { "username", "password", "confirmPassword", "name", "email", "admin", "status", "roles_id" });
 	}
 
 	@InitBinder("userUpdateForm")
 	public void initUserUpdateFormBinder(WebDataBinder binder) {
-		binder.setAllowedFields(new String[] { "id", "username", "password", "confirmPassword", "name", "email", "admin", "status" });
+		binder.setAllowedFields(new String[] { "id", "username", "password", "confirmPassword", "name", "email", "admin", "status", "roles_id" });
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -70,6 +72,7 @@ public class UserController {
 			return "users/new";
         }
         userService.saveUser(user);
+        map.clear();
         return "redirect:/users";
     }
 	
@@ -82,7 +85,7 @@ public class UserController {
 			user.setPassword(null);
 		}
         userService.updateUser(user);
-        user = null;
+        map.clear();
         return "redirect:/users";
     }
 
@@ -94,6 +97,11 @@ public class UserController {
 
 	public void setUserService(UserService userService) {
 		this.userService = userService;
+	}
+	
+	@ModelAttribute("roles")
+	public List<FullRole> getRoles() {
+		return userService.getAllRoles();
 	}
 	
 	@ModelAttribute("userstype")
