@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="base.definition" template="/WEB-INF/jsp/adminLayout/layout.jsp">
+		<put-attribute name="base" value="/bms" type="string" cascade="true" />
+		<put-attribute name="title" value="" />
+		<put-attribute name="navbar"
+			value="/WEB-INF/jsp/adminLayout/partial/navbar.jsp" />
+		<put-attribute name="sidebar"
+			value="/WEB-INF/jsp/adminLayout/partial/sidebar.jsp" />
+		<put-attribute name="breadcrumb"
+			value="/WEB-INF/jsp/adminLayout/partial/breadcrumb.jsp" />
+		<put-attribute name="footer"
+			value="/WEB-INF/jsp/adminLayout/partial/footer.jsp" />
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<definition name="contact" extends="base.definition">
+		<put-attribute name="title" value="Contact Manager" />
+		<put-attribute name="body" value="/WEB-INF/jsp/contact.jsp" />
+	</definition>
+	
+	<definition name="*/*" extends="base.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+</tiles-definitions>
