@@ -1,12 +1,17 @@
 package com.vamika.bms.service;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-import com.vamika.bms.model.User;
+import com.vamika.bms.view.FullPermission;
 import com.vamika.bms.view.FullRole;
 import com.vamika.bms.view.FullUser;
 
 public interface UserService {
+	
+	public final static List<String>PERMISSIONS = Arrays.asList("User List", "User Show", "User Show Own", "User Create", "User Update", "User Update Own", "User Delete", "Role List", "Role Show", "Role Create", "Role Update", "Role Delete", "Permission List", "Permission Create", "Permission Delete");
+
 	public List<FullUser> getAllActiveUsers();
 	public List<FullUser> getAllUsers();
     public FullUser loadUser(String userName);
@@ -20,4 +25,10 @@ public interface UserService {
     public void saveRole(FullRole role);
     public void updateRole(FullRole role);
 	public void deleteRole(String name);
+	
+	public List<FullPermission> getAllPermissions();
+    public FullPermission loadPermission(String name);
+    public void savePermission(FullPermission permission);
+    public void saveOrUpdatePermission(FullPermission permission);
+	public void deletePermission(String name);
 }

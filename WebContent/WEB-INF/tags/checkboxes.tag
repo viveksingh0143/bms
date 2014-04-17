@@ -25,7 +25,7 @@
 	<div class="form-group${status.error ? ' error' : '' }">
 		<form:label path="${path}" class="col-sm-${labelcol} control-label">${label}<c:if test="${required}"><span class="required">*</span></c:if></form:label>
 		<div class="col-sm-4">
-			<form:checkboxes element="div" items="${items}" itemLabel="${itemLabel}" itemValue="${itemValue}" path="${path}" cssClass="${empty cssClass ? 'test' : cssClass}" />
+			<form:checkboxes element="div" items="${items}" itemLabel="${itemLabel}" itemValue="${itemValue}" path="${path}" cssClass="${empty cssClass ? 'inline-checkbox' : cssClass}" />
 	    </div>
 	    <div class="col-sm-${8-labelcol}">
 	    	<c:if test="${status.error}">

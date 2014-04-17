@@ -29,9 +29,9 @@ public class Permission implements Serializable {
 	@Column(nullable=false, unique = true)
 	private String name;
 
-	// bi-directional many-to-many association to Role
+/*	// bi-directional many-to-many association to Role
 	@ManyToMany(mappedBy = "permissions")
-	private List<Role> roles;
+	private List<Role> roles;*/
 
 	public Permission() {
 	}
@@ -52,12 +52,17 @@ public class Permission implements Serializable {
 		this.name = name;
 	}
 
-	public List<Role> getRoles() {
+/*	public List<Role> getRoles() {
 		return this.roles;
 	}
 
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
-
+*/
+	public static final class Factory {
+		public static Permission newInstance() {
+			return new Permission();
+		}
+	}
 }

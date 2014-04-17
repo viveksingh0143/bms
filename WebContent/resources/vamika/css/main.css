@@ -121,3 +121,6 @@ body {
 	padding-left: 20px;
 	padding-right: 20px;
 }
+input.inline-checkbox {
+	margin-right: 10px;
+}
