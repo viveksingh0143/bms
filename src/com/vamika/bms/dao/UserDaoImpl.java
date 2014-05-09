@@ -109,14 +109,14 @@ public class UserDaoImpl extends UserDaoBase {
 
 	@Override
 	public void remove(User user) {
+		user.getRoles().clear();
 		getSessionFactory().getCurrentSession().delete(user);
-
 	}
 
 	@Override
 	public void remove(Integer id) {
 		User user = load(id);
-		getSessionFactory().getCurrentSession().delete(user);
+		remove(user);
 	}
 
 	@Override

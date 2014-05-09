@@ -1,13 +1,16 @@
 package com.vamika.bms.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vamika.bms.model.Permission;
 import com.vamika.bms.model.Role;
 import com.vamika.bms.view.FullRole;
 
@@ -42,6 +45,13 @@ public abstract class RoleDaoBase implements RoleDao {
 		target.setId(role.getId());
 		target.setName(role.getName());
 		target.setStatus(role.getStatus());
+		if(role.getPermissions() != null && role.getPermissions().size() > 0) {
+			List<Integer>permissionsId = new ArrayList<Integer>();
+			for(Permission permission: role.getPermissions()) {
+				permissionsId.add(permission.getId());
+			}
+			target.setPermissions_id(permissionsId);
+		}
 	}
 
 	public FullRole toFullVO(final Role entity) {

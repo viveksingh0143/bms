@@ -27,7 +27,6 @@ public class DatabaseInitializer implements BeanFactoryAware {
 	
 	@PostConstruct
     public void init(){
-		List<String>permissions = new ArrayList<String>();
 		final List<Class<?>> processorCandidates = ReflectionHelper.findClassesImpmenenting(ApplicationStartupService.class, ApplicationStartupService.class.getPackage());
 		for(Class classObj: processorCandidates) {
 			if(Modifier.isAbstract( classObj.getModifiers())) {
@@ -39,7 +38,7 @@ public class DatabaseInitializer implements BeanFactoryAware {
 								try {
 									Field field = interfaceObj.getField("PERMISSIONS"); //Note, this can throw an exception if the field doesn't exist.
 								    List<String> classPermissions = (List<String>)field.get(obj);
-								    permissions.addAll(classPermissions);
+								    initPermissions(classPermissions);
 								} catch(Exception e) {}
 								
 							    for(Method method: ApplicationStartupService.class.getMethods()) {
@@ -58,7 +57,9 @@ public class DatabaseInitializer implements BeanFactoryAware {
 				}
 			}
 		}
-
+    }
+	
+	private void initPermissions(List<String>permissions) {
 		List<FullPermission>fullPermissions = new ArrayList<FullPermission>();
 		for(String permission: permissions) {
 			FullPermission fullPermission = userService.loadPermission(permission);
@@ -69,7 +70,7 @@ public class DatabaseInitializer implements BeanFactoryAware {
 				userService.savePermission(fullPermission);
 			}
 		}
-    }
+	}
      
     public DatabaseInitializer(){
     }

@@ -1,7 +1,7 @@
 package com.vamika.bms.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ public class UserServiceImpl extends UserServiceBase {
 
 	@Override
 	@Transactional
-	public void saveUser(FullUser fullUser) {
+	public FullUser saveUser(FullUser fullUser) {
 		User user = getUserDao().fullVOToEntity(fullUser);
 		if(fullUser.getRoles_id() != null) {
 			List<Role>roles = new ArrayList<Role>();
@@ -54,7 +54,7 @@ public class UserServiceImpl extends UserServiceBase {
 			}
 			user.setRoles(roles);
 		}
-		getUserDao().save(user);
+		return (FullUser) getUserDao().save(UserDao.TRANSFORM_FULL, user);
 	}
 
 	@Override
@@ -101,9 +101,16 @@ public class UserServiceImpl extends UserServiceBase {
 
 	@Override
 	@Transactional
-	public void saveRole(FullRole fullRole) {
+	public FullRole saveRole(FullRole fullRole) {
 		Role role = getRoleDao().fullVOToEntity(fullRole);
-		getRoleDao().save(role);
+		if(fullRole.getPermissions_id() != null) {
+			List<Permission>permissions = new ArrayList<Permission>();
+			for(Integer permissionId: fullRole.getPermissions_id()) {
+				permissions.add(getPermissionDao().load(permissionId));
+			}
+			role.setPermissions(permissions);
+		}
+		return (FullRole) getRoleDao().save(RoleDao.TRANSFORM_FULL, role);
 	}
 
 	@Override
@@ -111,6 +118,13 @@ public class UserServiceImpl extends UserServiceBase {
 	public void updateRole(FullRole fullRole) {
 		Role role = getRoleDao().load(fullRole.getId());
 		getRoleDao().fullVOToEntity(fullRole, role, Boolean.FALSE);
+		if(fullRole.getPermissions_id() != null) {
+			List<Permission>permissions = new ArrayList<Permission>();
+			for(Integer permissionId: fullRole.getPermissions_id()) {
+				permissions.add(getPermissionDao().load(permissionId));
+			}
+			role.setPermissions(permissions);
+		}
 		getRoleDao().update(role);
 	}
 
@@ -136,9 +150,9 @@ public class UserServiceImpl extends UserServiceBase {
 
 	@Override
 	@Transactional
-	public void savePermission(FullPermission fullPermission) {
+	public FullPermission savePermission(FullPermission fullPermission) {
 		Permission permission = getPermissionDao().fullVOToEntity(fullPermission);
-		getPermissionDao().save(permission);
+		return (FullPermission) getPermissionDao().save(PermissionDao.TRANSFORM_FULL, permission);
 	}
 	
 	@Override
@@ -162,6 +176,38 @@ public class UserServiceImpl extends UserServiceBase {
 	public void initDatabase() {
 		FullUser admin = (FullUser)getUserDao().load(UserDao.TRANSFORM_FULL, "admin");
 		if(admin == null) {
+			List<FullPermission> permissions = (ArrayList)getPermissionDao().loadAll(getPermissionDao().TRANSFORM_FULL);
+			
+			FullRole adminrole = new FullRole();
+			adminrole.setName("Site Administrator");
+			adminrole.setPermissions_id(new ArrayList<Integer>());
+			for(FullPermission fullPermission: permissions) {
+				adminrole.getPermissions_id().add(fullPermission.getId());
+			}
+			adminrole.setStatus(EnableDisableStatus.ENABLE);
+			adminrole = this.saveRole(adminrole);
+			
+			FullRole editorrole = new FullRole();
+			editorrole.setName("Editor");
+			editorrole.setPermissions_id(new ArrayList<Integer>());
+			for(int i = 0; i < permissions.size()/2; i++) {
+				FullPermission fullPermission = permissions.get(i);
+				editorrole.getPermissions_id().add(fullPermission.getId());
+			}
+			editorrole.setStatus(EnableDisableStatus.ENABLE);
+			editorrole = this.saveRole(editorrole);
+			
+			FullRole editoradminrole = new FullRole();
+			editoradminrole.setName("Editor Admin");
+			editoradminrole.setPermissions_id(new ArrayList<Integer>());
+			for(int i = 0; i < permissions.size()/2; i++) {
+				FullPermission fullPermission = permissions.get(i);
+				editoradminrole.getPermissions_id().add(fullPermission.getId());
+			}
+			editoradminrole.setStatus(EnableDisableStatus.ENABLE);
+			editoradminrole = this.saveRole(editoradminrole);
+			
+			
 			admin = new FullUser();
 			admin.setUsername("admin");
 			admin.setEmail("viveksingh0143@gmail.com");
@@ -170,8 +216,39 @@ public class UserServiceImpl extends UserServiceBase {
 			admin.setConfirmPassword("p@ssw0rd");
 			admin.setAdmin(UsersType.ADMIN);
 			admin.setStatus(UsersStatus.ENABLE);
-//			admin.setRoles_id(roles_id);
-//			admin.setroles
+			this.saveUser(admin);
+			
+			admin = new FullUser();
+			admin.setUsername("editor1");
+			admin.setEmail("editor1@gmail.com");
+			admin.setName("Editor 1");
+			admin.setPassword("p@ssw0rd");
+			admin.setConfirmPassword("p@ssw0rd");
+			admin.setAdmin(UsersType.NORMAL);
+			admin.setStatus(UsersStatus.ENABLE);
+			admin.setRoles_id(Arrays.asList(editorrole.getId()));
+			this.saveUser(admin);
+			
+			admin = new FullUser();
+			admin.setUsername("editor2");
+			admin.setEmail("editor2@gmail.com");
+			admin.setName("Editor 2");
+			admin.setPassword("p@ssw0rd");
+			admin.setConfirmPassword("p@ssw0rd");
+			admin.setAdmin(UsersType.NORMAL);
+			admin.setStatus(UsersStatus.ENABLE);
+			admin.setRoles_id(Arrays.asList(editorrole.getId(), editoradminrole.getId()));
+			this.saveUser(admin);
+			
+			admin = new FullUser();
+			admin.setUsername("siteadministrator");
+			admin.setEmail("siteadministrator@gmail.com");
+			admin.setName("Site Administrator");
+			admin.setPassword("p@ssw0rd");
+			admin.setConfirmPassword("p@ssw0rd");
+			admin.setAdmin(UsersType.NORMAL);
+			admin.setStatus(UsersStatus.ENABLE);
+			admin.setRoles_id(Arrays.asList(adminrole.getId()));
 			this.saveUser(admin);
 		}
 	}

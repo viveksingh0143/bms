@@ -90,8 +90,9 @@ public class UserController {
     }
 
 	@RequestMapping(value = "/delete/{userName}", method = { RequestMethod.GET, RequestMethod.DELETE })
-	public String destroyUser(@PathVariable String userName) {
+	public String destroyUser(@PathVariable String userName, ModelMap map) {
 		userService.deleteUser(userName);
+		map.clear();
 		return "redirect:/users";
 	}
 

@@ -109,14 +109,15 @@ public class RoleDaoImpl extends RoleDaoBase {
 
 	@Override
 	public void remove(Role role) {
+		role.getUsers().clear();
+		role.getPermissions().clear();
 		getSessionFactory().getCurrentSession().delete(role);
-
 	}
 
 	@Override
 	public void remove(Integer id) {
 		Role role = load(id);
-		getSessionFactory().getCurrentSession().delete(role);
+		remove(role);
 	}
 
 	@Override

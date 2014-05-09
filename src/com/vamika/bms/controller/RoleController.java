@@ -1,5 +1,7 @@
 package com.vamika.bms.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -17,6 +19,7 @@ import com.vamika.bms.model.enums.EnumInterface;
 import com.vamika.bms.service.UserService;
 import com.vamika.bms.validator.Create;
 import com.vamika.bms.validator.Update;
+import com.vamika.bms.view.FullPermission;
 import com.vamika.bms.view.FullRole;
 
 @Controller
@@ -28,12 +31,12 @@ public class RoleController {
 	
 	@InitBinder("roleCreateForm")
 	public void initRoleCreateFormBinder(WebDataBinder binder) {
-		binder.setAllowedFields(new String[] { "name", "status" });
+		binder.setAllowedFields(new String[] { "name", "status", "permissions_id" });
 	}
 
 	@InitBinder("roleUpdateForm")
 	public void initRoleUpdateFormBinder(WebDataBinder binder) {
-		binder.setAllowedFields(new String[] { "id", "name", "status" });
+		binder.setAllowedFields(new String[] { "id", "name", "status", "permissions_id" });
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -68,6 +71,7 @@ public class RoleController {
 			return "roles/new";
         }
 		userService.saveRole(role);
+		map.clear();
         return "redirect:/roles";
     }
 	
@@ -77,18 +81,24 @@ public class RoleController {
         	return "roles/edit";
         }
 		userService.updateRole(role);
-        role = null;
+        map.clear();
         return "redirect:/roles";
     }
 
 	@RequestMapping(value = "/delete/{roleName}", method = { RequestMethod.GET, RequestMethod.DELETE })
-	public String destroyRole(@PathVariable String roleName) {
+	public String destroyRole(@PathVariable String roleName, ModelMap map) {
 		userService.deleteRole(roleName);
+		map.clear();
 		return "redirect:/roles";
 	}
 
 	public void setRoleService(UserService userService) {
 		this.userService = userService;
+	}
+	
+	@ModelAttribute("permissions")
+	public List<FullPermission> getPermissions() {
+		return userService.getAllPermissions();
 	}
 	
 	@ModelAttribute("rolesstatus")

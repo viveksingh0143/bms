@@ -3,6 +3,7 @@ package com.vamika.bms.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,11 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.vamika.bms.model.enums.EnableDisableStatus;
-import com.vamika.bms.model.enums.UsersStatus;
 
 
 /**
@@ -42,20 +43,22 @@ public class Role implements Serializable {
 	private EnableDisableStatus status = EnableDisableStatus.ENABLE;
 
 	//bi-directional many-to-many association to Permission
-	@ManyToMany
+	@ManyToMany(cascade=CascadeType.ALL)
 	@JoinTable(
 		name="roles_permissions"
 		, joinColumns={
-			@JoinColumn(name="roles_id")
+			@JoinColumn(name="roles_id", nullable = false, updatable = false)
 			}
 		, inverseJoinColumns={
-			@JoinColumn(name="permissions_id")
+			@JoinColumn(name="permissions_id", nullable = false, updatable = false)
 			}
 		)
 	private List<Permission> permissions;
 
 	//bi-directional many-to-many association to User
-	@ManyToMany(mappedBy="roles")
+//	@ManyToMany(mappedBy="roles", cascade=CascadeType.ALL)
+	@ManyToMany(cascade=CascadeType.ALL)
+	@JoinTable(name = "users_roles", joinColumns = { @JoinColumn(name = "roles_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "users_id", nullable = false, updatable = false, insertable = false) })
 	private List<User> users;
 
 	public Role() {

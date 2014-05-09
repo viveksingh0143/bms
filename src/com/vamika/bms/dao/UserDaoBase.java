@@ -82,7 +82,7 @@ public abstract class UserDaoBase implements UserDao {
 		target.setEmail(user.getEmail());
 		target.setAdmin(user.getAdmin());
 		target.setPassword(user.getPassword());
-		if(user.getRoles().size() > 0) {
+		if(user.getRoles() != null && user.getRoles().size() > 0) {
 			List<Integer>rolesId = new ArrayList<Integer>();
 			for(Role role: user.getRoles()) {
 				rolesId.add(role.getId());

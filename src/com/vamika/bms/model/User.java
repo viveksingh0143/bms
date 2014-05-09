@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,7 +19,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 
 import com.vamika.bms.model.enums.UsersStatus;
 import com.vamika.bms.model.enums.UsersType;
@@ -72,8 +72,8 @@ public class User implements Serializable {
 	private Integer signinFailedCount;
 
 	// bi-directional many-to-many association to Role
-	@ManyToMany
-	@JoinTable(name = "users_roles", joinColumns = { @JoinColumn(name = "users_id") }, inverseJoinColumns = { @JoinColumn(name = "roles_id") })
+	@ManyToMany(cascade=CascadeType.ALL)
+	@JoinTable(name = "users_roles", joinColumns = { @JoinColumn(name = "users_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "roles_id", nullable = false, updatable = false, insertable = false) })
 	private List<Role> roles;
 
 	public Integer getId() {
